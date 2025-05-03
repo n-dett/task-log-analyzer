@@ -8,9 +8,11 @@ ___ ____ ____ _  _    _    ____ ____    ____ ____ _  _ ____ ____ ____ ___ ____ _
     print(""" 
 ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 Please choose an option by entering a number below:
-1) Upload a .csv file ------------------> (Data from the file will be stored)
+1) Load a .csv file --------------------> (Data from the file will be stored)
 2) View/Edit Task Logs -----------------> (View, add, edit, and delete data)
 3) View Task Log Analytics -------------> (View data summaries and stats)
+
+** Important **: In order to store and analyze task logs, you must first create\na database instance as specified in the README file
     """)
 
     # Get user input
@@ -25,7 +27,6 @@ Please choose an option by entering a number below:
             print("Invalid number. Please try again.")
         else:
             invalid = False
-            print("Reached")
 
 
     match user_num:
