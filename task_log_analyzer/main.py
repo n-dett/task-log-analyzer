@@ -1,8 +1,8 @@
 def main():
     print(r"""
-___ ____ ____ _  _    _    ____ ____    ____ ____ _  _ ____ ____ ____ ___ ____ ____ 
- |  |__| [__  |_/     |    |  | | __    | __ |___ |\ | |___ |__/ |__|  |  |  | |__/ 
- |  |  | ___] | \_    |___ |__| |__]    |__] |___ | \| |___ |  \ |  |  |  |__| |  \ """, end='')
+___ ____ ____ _  _    _    ____ ____    ____ _  _ ____ _    _   _ ___  ____ ____ 
+ |  |__| [__  |_/     |    |  | | __    |__| |\ | |__| |     \_/    /  |___ |__/ 
+ |  |  | ___] | \_    |___ |__| |__]    |  | | \| |  | |___   |    /__ |___ |  \ """, end='')
 
     # Home menu
     print(""" 
@@ -11,6 +11,7 @@ Please choose an option by entering a number below:
 1) Load a .csv file --------------------> (Data from the file will be stored)
 2) View/Edit Task Logs -----------------> (View, add, edit, and delete data)
 3) View Task Log Analytics -------------> (View data summaries and stats)
+4) Exit program
 
 ** Important **: In order to store and analyze task logs, you must first create\na database instance as specified in the README file
     """)
@@ -23,7 +24,7 @@ Please choose an option by entering a number below:
         user_num = int(input("Enter a number: "))
 
         # Check if number is valid
-        if not user_num in (1, 2, 3):
+        if not user_num in (1, 2, 3, 4):
             print("Invalid number. Please try again.")
         else:
             invalid = False
@@ -39,8 +40,8 @@ Please choose an option by entering a number below:
         case 3:
             # Go to view task log analytics screen
             pass
-        case _:
-            pass
+        case 4:
+            return
 
 if __name__ == "__main__":
     main()
