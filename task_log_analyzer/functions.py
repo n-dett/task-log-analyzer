@@ -1,7 +1,16 @@
+import constants as c
+from constants import LONG_LINE
+
+
+def section_heading(heading:str, length:str):
+    line = c.SHORT_LINE if length == 'short' else c.LONG_LINE
+    print(f"""{heading}
+{line}""")
+
 def home_menu_screen():
     # Home menu
-    print(""" 
-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+    print(f""" 
+{LONG_LINE}
 [Please choose an option by entering a number below]
 1) Load a .csv file --------------------> (Data from the file will be stored)
 2) View/Edit Task Logs -----------------> (View, add, edit, and delete data)
@@ -31,16 +40,14 @@ def home_menu_screen():
 
 def load_csv_screen():
     """Instructions and function for user to load csv file"""
-    print("""\n\n[Please choose an option below by entering a number below]
-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――\n""")
-    print("""Navigation
-――――――――――――――――――――
+    print(c.MSG_PLEASE_CHOOSE)
+    print(f"""{c.NAV_TITLE}
 1) Return to home menu\n""")
-    print("""Add a .csv file
-――――――――――――――――――――
-2) Upload a .csv file\n
-Instructions:
-――――――――――――――――――――
+    section_heading("Add a .csv file", "long")
+    print(f"""
+2) Upload a .csv file\n""")
+    section_heading("Instructions", "long")
+    print("""
 Task log data from your .csv file will be stored in your database.
 Multiple .csv files can be uploaded (one at a time), but duplicate rows will be ignored.
 Rows missing a Date, Task Name, Start Time, or End Time will be dropped.
@@ -59,7 +66,7 @@ Enter 1 to cancel.""")
     user_csv_input()
 
 
-def get_user_selection(nums_tuple=tuple):
+def get_user_selection(nums_tuple:tuple):
     """Get user selection and validate"""
     # Get user input
     user_num = 0
@@ -93,5 +100,15 @@ def user_csv_input():
             print("Enter 1 to return to home screen, or 2 to load another file.")
             user_csv_input()
 
+def view_edit_task_logs_screen():
+    """Instructions and function for user to load csv file"""
+    print(c.MSG_PLEASE_CHOOSE)
+    print(f"{c.NAV_TITLE}")
+    print("1) Return to home menu\n")
 
-# load_csv()
+    section_heading("View/Edit Task Logs", "long")
+    print("""2) Upload a .csv file   3) Manually add a task log
+4) Edit a task log      5) Delete a task log\n""")
+
+
+# view_edit_task_logs_screen()

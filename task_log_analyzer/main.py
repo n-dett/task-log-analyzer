@@ -1,4 +1,4 @@
-from functions import *
+import functions as f
 
 def main():
     # Display title and main menu on program start
@@ -7,7 +7,7 @@ ___ ____ ____ _  _    _    ____ ____    ____ _  _ ____ _    _   _ ___  ____ ____
  |  |__| [__  |_/     |    |  | | __    |__| |\ | |__| |     \_/    /  |___ |__/ 
  |  |  | ___] | \_    |___ |__| |__]    |  | | \| |  | |___   |    /__ |___ |  \ """, end='')
 
-    home_menu_screen()
+    f.home_menu_screen()
 
 if __name__ == "__main__":
     main()
