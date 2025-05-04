@@ -1,7 +1,7 @@
-def home_menu():
+def home_menu_screen():
     # Home menu
     print(""" 
-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 [Please choose an option by entering a number below]
 1) Load a .csv file --------------------> (Data from the file will be stored)
 2) View/Edit Task Logs -----------------> (View, add, edit, and delete data)
@@ -12,12 +12,12 @@ def home_menu():
         """)
 
     # Get user input
-    user_num = get_user_input((1, 2, 3, 4))
+    user_num = get_user_selection((1, 2, 3, 4))
 
     match user_num:
         case 1:
             # Go to upload csv screen
-            load_csv()
+            load_csv_screen()
         case 2:
             # Go to view/edit task logs screen
             pass
@@ -29,9 +29,10 @@ def home_menu():
             return
 
 
-def load_csv():
+def load_csv_screen():
+    """Instructions and function for user to load csv file"""
     print("""\n\n[Please choose an option below by entering a number below]
-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――\n""")
+―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――\n""")
     print("""Navigation
 ――――――――――――――――――――
 1) Return to home menu\n""")
@@ -52,22 +53,13 @@ Columns must be in this order and any extra columns will be ignored.
     • Category (text)
     • Start Time (e.g. 6:00 PM or 18:00) 
     • End Time (e.g. 6:00 PM or 18:00)\n
-To load file, enter 2 if you have not already.
-Then enter the file path of your .csv file, or enter 1 to cancel.""")
+To load file, enter 2 if you have not already, then enter the file path of your .csv file.
+Enter 1 to cancel.""")
 
-    # Get user selection
-    user_num = get_user_input((1,2))
-
-    match user_num:
-        case 1:
-            # Go to home menu
-            home_menu()
-        case 2:
-            # Upload csv
-            pass
+    user_csv_input()
 
 
-def get_user_input(nums_tuple=tuple):
+def get_user_selection(nums_tuple=tuple):
     """Get user selection and validate"""
     # Get user input
     user_num = 0
@@ -82,5 +74,24 @@ def get_user_input(nums_tuple=tuple):
         else:
             invalid = False
     return user_num
+
+
+def user_csv_input():
+    """User inputs one or more csv files to be stored/analyzed"""
+    # Get user selection
+    user_num = get_user_selection((1,2))
+
+    match user_num:
+        case 1:
+            # Go to home menu
+            home_menu_screen()
+        case 2:
+            # Upload csv
+            file_path = input("Enter .csv file path: ")
+            # Will add cleaning/validation later in microservices
+            print("\nFile load successful!")
+            print("Enter 1 to return to home screen, or 2 to load another file.")
+            user_csv_input()
+
 
 # load_csv()
