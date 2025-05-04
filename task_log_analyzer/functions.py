@@ -2,10 +2,9 @@ import constants as c
 from constants import LONG_LINE
 
 
-def section_heading(heading:str, length:str):
-    line = c.SHORT_LINE if length == 'short' else c.LONG_LINE
+def section_heading(heading:str):
     print(f"""{heading}
-{line}""")
+{c.LONG_LINE}""")
 
 def home_menu_screen():
     # Home menu
@@ -29,7 +28,7 @@ def home_menu_screen():
             load_csv_screen()
         case 2:
             # Go to view/edit task logs screen
-            pass
+            view_edit_task_logs_screen()
         case 3:
             # Go to view task log analytics screen
             pass
@@ -43,10 +42,10 @@ def load_csv_screen():
     print(c.MSG_PLEASE_CHOOSE)
     print(f"""{c.NAV_TITLE}
 1) Return to home menu\n""")
-    section_heading("Add a .csv file", "long")
+    section_heading("Add a .csv file")
     print(f"""
 2) Upload a .csv file\n""")
-    section_heading("Instructions", "long")
+    section_heading("Instructions")
     print("""
 Task log data from your .csv file will be stored in your database.
 Multiple .csv files can be uploaded (one at a time), but duplicate rows will be ignored.
@@ -100,15 +99,34 @@ def user_csv_input():
             print("Enter 1 to return to home screen, or 2 to load another file.")
             user_csv_input()
 
+
 def view_edit_task_logs_screen():
-    """Instructions and function for user to load csv file"""
+    """User can choose between CRUD operations"""
     print(c.MSG_PLEASE_CHOOSE)
     print(f"{c.NAV_TITLE}")
     print("1) Return to home menu\n")
 
-    section_heading("View/Edit Task Logs", "long")
-    print("""2) Upload a .csv file   3) Manually add a task log
+    section_heading("View/Edit Task Logs")
+    print("""2) View task logs       3) Manually add a task log
 4) Edit a task log      5) Delete a task log\n""")
+
+    user_num = get_user_selection((1, 2, 3, 4, 5))
+
+    match user_num:
+        case 1:
+            # Go to upload csv screen
+            load_csv_screen()
+        case 2:
+            # Go to view/edit task logs screen
+            view_edit_task_logs_screen()
+        case 3:
+            # Go to view task log analytics screen
+            pass
+        case 4:
+            # Exit
+            return
+        case 5:
+            pass
 
 
 # view_edit_task_logs_screen()
