@@ -1,4 +1,5 @@
 import constants as c
+from constants import MSG_PLEASE_CHOOSE, NAV_TITLE
 from sample_data import sample_data
 
 
@@ -122,7 +123,7 @@ def view_edit_task_logs_screen(filter_states):
             view_task_logs_screen(filter_states)
         case 3:
             # Go to add task log screen
-            pass
+            add_task_log_screen(filter_states)
         case 4:
             # Go to edit task log screen
             return
@@ -132,11 +133,11 @@ def view_edit_task_logs_screen(filter_states):
 
 
 def view_task_logs_screen(filter_states):
-    task_name_filter = filter_states["task name"]
-    start_date_filter = filter_states["start date"]
-    end_date_filter = filter_states["end date"]
-    category_filter = filter_states["category"]
-    task_type_filter = filter_states["task type"]
+    task_name_filter = filter_states["Task Name"]
+    start_date_filter = filter_states["Start Date"]
+    end_date_filter = filter_states["End Date"]
+    category_filter = filter_states["Category"]
+    task_type_filter = filter_states["Task Type"]
 
 
     print(c.MSG_PLEASE_CHOOSE)
@@ -168,11 +169,11 @@ def view_task_logs_screen(filter_states):
 
 
 def set_filters_screen(filter_states, prev_screen):
-    task_name_filter = filter_states["task name"]
-    start_date_filter = filter_states["start date"]
-    end_date_filter = filter_states["end date"]
-    category_filter = filter_states["category"]
-    task_type_filter = filter_states["task type"]
+    task_name_filter = filter_states["Task Name"]
+    start_date_filter = filter_states["Start Date"]
+    end_date_filter = filter_states["End Date"]
+    category_filter = filter_states["Category"]
+    task_type_filter = filter_states["Task Type"]
 
     print(c.MSG_PLEASE_CHOOSE)
     print(c.NAV_TITLE)
@@ -229,6 +230,7 @@ def update_filter(filter_states, filter_name, prev_screen):
     # Need to add input validation
     filter_states[filter_name] = user_input
     print(f"{filter_name} filter successfully updated!")
+    print(f"When you return to the {prev_screen} screen, the filter will be applied.")
     print(f"Enter 1 to return to home screen, 2 to return to {prev_screen} screen, or 3 to edit another filter.")
 
     user_num = get_user_selection((1,2,3))
@@ -247,3 +249,55 @@ def update_filter(filter_states, filter_name, prev_screen):
             # Go to set/remove data filter
             user_filter_input(filter_states, prev_screen)
 
+
+def add_task_log_screen(filter_states):
+    """User manually inputs a task log"""
+    print(MSG_PLEASE_CHOOSE)
+    print(NAV_TITLE)
+    print("""1) Return to home menu
+2) Return to View/Edit menu\n""")
+    section_heading("Manually Add a Task Log")
+    print("3) Add a task log\n")
+
+    user_add_task_log_input(filter_states)
+
+
+def user_add_task_log_input(filter_states):
+    user_num = get_user_selection((1,2,3))
+
+    match user_num:
+        case 1:
+            # Go to home screen
+            home_menu_screen(filter_states)
+        case 2:
+            # Go to view task logs screen
+            view_task_logs_screen(filter_states)
+        case 3:
+            # Add a task log
+            add_task_log(filter_states)
+
+
+def add_task_log(filter_states):
+    task_date = input("Enter task date (YYYY-MM-DD): ")
+    task_name = input("Enter task name: ")
+    task_type = input("Enter task type: ")
+    task_category = input("Enter category name: ")
+    start_time = input("Enter start time: ")
+    end_time = input("Enter end time: ")
+
+    # Need to validate
+    # Add inputs to database
+
+    print(f"\nYour task, {task_name}, was successfully added!")
+    print("Enter 1 to return to home menu, or 2 to return to View/Edit menu, or 3 to add another task log.")
+    user_num = get_user_selection((1,2,3))
+    match user_num:
+        case 1:
+            # Go to home screen
+            home_menu_screen(filter_states)
+        case 2:
+            # Go to view task logs screen
+            view_task_logs_screen(filter_states)
+        case 3:
+            # Add a task log
+            add_task_log(filter_states)

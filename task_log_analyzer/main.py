@@ -8,11 +8,11 @@ ___ ____ ____ _  _    _    ____ ____    ____ _  _ ____ _    _   _ ___  ____ ____
  |  |  | ___] | \_    |___ |__| |__]    |  | | \| |  | |___   |    /__ |___ |  \ """, end='')
 
     filter_states = {
-        "task name": "any",
-        "start date": "any",
-        "end date": "any",
-        "category": "any",
-        "task type": "any"
+        "Task Name": "any",
+        "Start Date": "any",
+        "End Date": "any",
+        "Category": "any",
+        "Task Type": "any"
     }
 
     f.home_menu_screen(filter_states)
