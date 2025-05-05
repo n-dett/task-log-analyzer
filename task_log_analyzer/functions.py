@@ -1,15 +1,16 @@
 import constants as c
-from constants import LONG_LINE
+from constants import MSG_PLEASE_CHOOSE, NAV_TITLE
+from sample_data import sample_data
 
 
 def section_heading(heading:str):
     print(f"""{heading}
 {c.LONG_LINE}""")
 
-def home_menu_screen():
+def home_menu_screen(filter_states):
     # Home menu
     print(f""" 
-{LONG_LINE}
+{c.LONG_LINE}
 [Please choose an option by entering a number below]
 1) Load a .csv file --------------------> (Data from the file will be stored)
 2) View/Edit Task Logs -----------------> (View, add, edit, and delete data)
@@ -28,7 +29,7 @@ def home_menu_screen():
             load_csv_screen()
         case 2:
             # Go to view/edit task logs screen
-            view_edit_task_logs_screen()
+            view_edit_task_logs_screen(filter_states)
         case 3:
             # Go to view task log analytics screen
             pass
@@ -100,33 +101,76 @@ def user_csv_input():
             user_csv_input()
 
 
-def view_edit_task_logs_screen():
+def view_edit_task_logs_screen(filter_states):
     """User can choose between CRUD operations"""
     print(c.MSG_PLEASE_CHOOSE)
     print(f"{c.NAV_TITLE}")
     print("1) Return to home menu\n")
 
     section_heading("View/Edit Task Logs")
-    print("""2) View task logs       3) Manually add a task log
-4) Edit a task log      5) Delete a task log\n""")
+
+    print('{:30} {:30}'.format("2) View task logs", "3) Manually add a task log"))
+    print('{:30} {:30}'.format("4) Edit a task log", "5) Delete a task log\n"))
 
     user_num = get_user_selection((1, 2, 3, 4, 5))
 
     match user_num:
         case 1:
-            # Go to upload csv screen
+            # Go to home menu
             load_csv_screen()
         case 2:
-            # Go to view/edit task logs screen
-            view_edit_task_logs_screen()
+            # Go to view task logs screen
+            view_task_logs_screen(filter_states)
         case 3:
-            # Go to view task log analytics screen
+            # Go to add task log screen
             pass
         case 4:
-            # Exit
+            # Go to edit task log screen
             return
         case 5:
+            # Go to delete task log screen
             pass
 
 
-# view_edit_task_logs_screen()
+def view_task_logs_screen(filter_states):
+    task_name_filter = filter_states["task name"]
+    start_date_filter = filter_states["start date"]
+    end_date_filter = filter_states["end date"]
+    category_filter = filter_states["category"]
+    task_type_filter = filter_states["task type"]
+
+
+    print(c.MSG_PLEASE_CHOOSE)
+    print(c.NAV_TITLE)
+    print("""1) Return to home menu
+2) Return to View/Edit menu""")
+
+    section_heading("\nActive Data Filters ----- (filter task logs by one or more criteria)")
+    print("{:30} {:30} {:30}".format(f"Task Name: {task_name_filter}", f"Start Date: {start_date_filter}",
+                                     f"End Date: {end_date_filter}"))
+    print("{:30} {:30}".format(f"Category: {category_filter}", f"Task Type: {task_type_filter}\n"))
+    print("3) Set or remove a data filter")
+
+    section_heading("\nView Task Logs")
+    # Output data
+    print(sample_data())
+
+    user_num = get_user_selection((1,2,3))
+    match user_num:
+        case 1:
+            # Go to home screen
+            home_menu_screen(filter_states)
+        case 2:
+            # Go to view/edit task logs screen
+            view_edit_task_logs_screen(filter_states)
+        case 3:
+            # Go to set/remove data filter screen
+            set_filters_screen(filter_states)
+
+
+def set_filters_screen(filter_states):
+    print(MSG_PLEASE_CHOOSE)
+    print(NAV_TITLE)
+
+
+
