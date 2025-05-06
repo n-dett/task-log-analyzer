@@ -145,11 +145,8 @@ def view_task_logs_screen(filter_states):
     print(c.NAV_TITLE)
     print("1) Return to home menu\n2) Return to View/Edit menu")
 
-    section_heading("\nActive Data Filters ----- (filter task logs by one or more criteria)")
-    print("{:30} {:30} {:30}".format(f"Task Name: {task_name_filter}", f"Start Date: {start_date_filter}",
-                                     f"End Date: {end_date_filter}"))
-    print("{:30} {:30}".format(f"Category: {category_filter}", f"Task Type: {task_type_filter}\n"))
-    print("3) Set or remove a data filter")
+    display_active_filters(filter_states)
+    print("3) Set or remove a data filter\n")
 
     section_heading("\nView Task Logs")
     # Output data
@@ -177,11 +174,9 @@ def set_filters_screen(filter_states, prev_screen):
 
     print(c.MSG_PLEASE_CHOOSE)
     print(c.NAV_TITLE)
-    print(f"1) Return to home menu\n2) Return to {prev_screen} Screen")
-    section_heading("\nActive Data Filters ----- (filter task logs by one or more criteria)")
-    print("{:30} {:30} {:30}".format(f"Task Name: {task_name_filter}", f"Start Date: {start_date_filter}",
-                                     f"End Date: {end_date_filter}"))
-    print("{:30} {:30}".format(f"Category: {category_filter}", f"Task Type: {task_type_filter}\n"))
+    print(f"1) Return to home menu\n2) Return to {prev_screen} screen")
+    display_active_filters(filter_states)
+    print("3) Set or remove a data filter\n")
 
     section_heading("Which data filter would you like to edit?")
     print("{:15} {:15} {:15}".format("4) Task Name", "5) Start Date",
@@ -205,7 +200,7 @@ def user_filter_input(filter_states, prev_screen):
             if prev_screen == "View Task Logs":
                 view_task_logs_screen(filter_states)
             else:
-                pass
+                task_log_analytics_screen(filter_states)
         case 4:
             # Task Name filter
             update_filter(filter_states, "task name", prev_screen)
@@ -242,7 +237,7 @@ def update_filter(filter_states, filter_name, prev_screen):
             if prev_screen == "View Task Logs":
                 view_task_logs_screen(filter_states)
             else:
-                pass
+                task_log_analytics_screen(filter_states)
         case 3:
             # Go to set/remove data filter
             user_filter_input(filter_states, prev_screen)
@@ -456,10 +451,46 @@ def delete_task_log(filter_states):
 
 
 def task_log_analytics_screen(filter_states):
-    pass
+    print(MSG_PLEASE_CHOOSE)
+    print(NAV_TITLE)
+    print("1) Return to home menu")
+
+    display_active_filters(filter_states)
+    print("2) Set or remove a data filter\n")
+
+    section_heading("Task Log Analytics")
+    # Temp sample data
+    print("Total number of tasks: 10")
+    print("Total time logged: 14:47:00")
+    print("Average duration per task log: 1:28:42")
+    print("Task type with most time logged: Design 07:39:00")
+    print("Category with most time logged: Freelance 08:17:00")
+    print("Most productive time of day: Evening (between 6:01 PM and 12:00 AM)")
+    print("Most productive day of the week: Sunday 04:33:00\n")
+
+    user_num = get_user_selection((1,2))
+
+    match user_num:
+        case 1:
+            home_menu_screen(filter_states)
+        case 2:
+            set_filters_screen(filter_states, "Task Log Analytics")
 
 
-# delete_task_log_screen({
+def display_active_filters(filter_states):
+    task_name_filter = filter_states["Task Name"]
+    start_date_filter = filter_states["Start Date"]
+    end_date_filter = filter_states["End Date"]
+    category_filter = filter_states["Category"]
+    task_type_filter = filter_states["Task Type"]
+
+    section_heading("\nActive Data Filters ---------- (filter task logs by one or more criteria)")
+    print("{:30} {:30} {:30}".format(f"Task Name: {task_name_filter}", f"Start Date: {start_date_filter}",
+                                     f"End Date: {end_date_filter}"))
+    print("{:30} {:30}".format(f"Category: {category_filter}", f"Task Type: {task_type_filter}\n"))
+
+
+# task_log_analytics_screen({
 #         "Task Name": "any",
 #         "Start Date": "any",
 #         "End Date": "any",
