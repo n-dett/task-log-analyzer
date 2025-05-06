@@ -201,19 +201,19 @@ def user_filter_input(filter_states, prev_screen):
                 task_log_analytics_screen(filter_states)
         case 4:
             # Task Name filter
-            update_filter(filter_states, "task name", prev_screen)
+            update_filter(filter_states, "Task Name", prev_screen)
         case 5:
             # Start Date filter
-            update_filter(filter_states, "start date", prev_screen)
+            update_filter(filter_states, "Start Date", prev_screen)
         case 6:
             # End Date filter
-            update_filter(filter_states, "end date", prev_screen)
+            update_filter(filter_states, "End Date", prev_screen)
         case 7:
             # Category filter
-            update_filter(filter_states, "category", prev_screen)
+            update_filter(filter_states, "Category", prev_screen)
         case 8:
             # Task Type filter
-            update_filter(filter_states, "task type", prev_screen)
+            update_filter(filter_states, "Task Type", prev_screen)
 
 
 def update_filter(filter_states, filter_name, prev_screen):
