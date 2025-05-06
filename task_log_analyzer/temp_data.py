@@ -1,10 +1,8 @@
-from operator import index
-
 import pandas as pd
 import math
 
-def sample_data():
-    df = pd.read_csv("./sample-data.csv", parse_dates=["Date"])
+def temp_data():
+    df = pd.read_csv("./temp-data.csv", parse_dates=["Date"])
     df["Start Time"]
 
     # Remove empty rows
@@ -24,4 +22,4 @@ def sample_data():
     df_string = df.to_string(index=False)
     # print(df_string)
 
-    return df_string
+    return df

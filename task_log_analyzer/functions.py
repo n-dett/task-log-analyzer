@@ -1,12 +1,15 @@
+from operator import index
+
 import constants as c
 from constants import MSG_PLEASE_CHOOSE, NAV_TITLE
-from sample_data import sample_data
+from temp_data import temp_data
+
 
 
 def get_user_selection(nums_tuple:tuple):
     """Get user selection and validate"""
     # Get user input
-    user_num = 0
+    user_num = None
     invalid = True
 
     while invalid:
@@ -49,7 +52,7 @@ def home_menu_screen(filter_states):
             view_edit_task_logs_screen(filter_states)
         case 3:
             # Go to view task log analytics screen
-            pass
+            task_log_analytics_screen(filter_states)
         case 4:
             # Exit
             return
@@ -126,7 +129,7 @@ def view_edit_task_logs_screen(filter_states):
             add_task_log_screen(filter_states)
         case 4:
             # Go to edit task log screen
-            return
+            edit_task_log_screen(filter_states)
         case 5:
             # Go to delete task log screen
             pass
@@ -153,7 +156,7 @@ def view_task_logs_screen(filter_states):
 
     section_heading("\nView Task Logs")
     # Output data
-    print(sample_data(), "\n")
+    print(temp_data().to_string(index=False), "\n")
 
     user_num = get_user_selection((1,2,3))
     match user_num:
@@ -301,3 +304,120 @@ def add_task_log(filter_states):
         case 3:
             # Add a task log
             add_task_log(filter_states)
+
+
+def edit_task_log_screen(filter_states):
+    print(MSG_PLEASE_CHOOSE)
+    print(NAV_TITLE)
+    print("""1) Return to home menu
+2) Return to View/Edit Menu\n""")
+
+    section_heading("Edit a Task Log")
+    print("3) Edit task log\n")
+
+    user_edit_task_log_input_1(filter_states)
+
+
+def user_edit_task_log_input_1(filter_states):
+    user_num = get_user_selection((1,2,3))
+
+    match user_num:
+        case 1:
+            # Go to home screen
+            home_menu_screen(filter_states)
+        case 2:
+            # Go to view_edit task logs screen
+            view_edit_task_logs_screen(filter_states)
+        case 3:
+            # Edit a task log
+            user_edit_task_log_input_2(filter_states)
+
+
+def user_edit_task_log_input_2(filter_states):
+    print("\nEnter the ID of the task log you would like to edit.")
+    print("(To find a task log ID, visit the View Task Logs screen and filter as needed.)")
+
+    task_id = get_task_id()
+
+    print(f"\nCurrent data for the task log with ID {task_id}:")
+
+    # Temp sample data
+    data = temp_data()
+    print(data.iloc[[0]].to_string(index=False), "\n")
+
+    print("Which field would you like to update?")
+    print(c.SHORT_LINE + c.SHORT_LINE)
+    print("{:15} {:15} {:15}".format("4) Date", "5) Task Name", "6) Task Type"))
+    print("{:15} {:15} {:15}".format("7) Category", "8) Start Time", "9) End Time\n"))
+
+    user_num = get_user_selection((1,2,4,5,6,7,8,9))
+    match user_num:
+        case 1:
+            # Go to home screen
+            home_menu_screen(filter_states)
+        case 2:
+            # Go to view task logs screen
+            view_task_logs_screen(filter_states)
+        case 4:
+            # Edit Date
+            edit_task_log(filter_states, "Date")
+        case 5:
+            # Edit Task Name
+            edit_task_log(filter_states, "Task Name")
+        case 6:
+            # Edit Task Type
+            edit_task_log(filter_states, "Task Type")
+        case 7:
+            # Edit Category
+            edit_task_log(filter_states, "Category")
+        case 8:
+            # Edit Start Time
+            edit_task_log(filter_states, "Start Time")
+        case 9:
+            # Edit End Time
+            edit_task_log(filter_states, "End Time")
+
+
+def edit_task_log(filter_states, column_name):
+    new_value = input(f"Enter a new {column_name} value, or 3 to cancel: ")
+
+    match new_value:
+        case 3:
+            # Cancel edit and return to main edit screen
+            edit_task_log_screen(filter_states)
+        case _:
+            # Validate the input
+            # Update the selected column
+            print(f"{column_name} updated!")
+            edit_task_log_screen(filter_states)
+
+
+def get_task_id():
+    """Get user selection and validate"""
+    # Get user input
+    user_num = None
+    invalid = True
+
+    while invalid:
+        user_num = int(input("Enter an ID: "))
+
+        # Check if number is valid
+        if not isinstance(user_num, int):
+            print("Invalid ID. Please try again.")
+        else:
+            invalid = False
+    return user_num
+
+
+
+def task_log_analytics_screen(filter_states):
+    pass
+
+
+# edit_task_log({
+#         "Task Name": "any",
+#         "Start Date": "any",
+#         "End Date": "any",
+#         "Category": "any",
+#         "Task Type": "any"
+#     })
