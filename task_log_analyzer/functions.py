@@ -61,11 +61,9 @@ def home_menu_screen(filter_states):
 def load_csv_screen(filter_states):
     """Instructions and function for user to load csv file"""
     print(c.MSG_PLEASE_CHOOSE)
-    print(f"""{c.NAV_TITLE}
-1) Return to home menu\n""")
+    print(f"{c.NAV_TITLE}\n1) Return to home menu\n")
     section_heading("Add a .csv file")
-    print(f"""
-2) Upload a .csv file\n""")
+    print(f"2) Upload a .csv file\n")
     section_heading("Instructions")
     print("""
 Task log data from your .csv file will be stored in your database.
@@ -132,7 +130,7 @@ def view_edit_task_logs_screen(filter_states):
             edit_task_log_screen(filter_states)
         case 5:
             # Go to delete task log screen
-            pass
+            delete_task_log_screen(filter_states)
 
 
 def view_task_logs_screen(filter_states):
@@ -145,8 +143,7 @@ def view_task_logs_screen(filter_states):
 
     print(c.MSG_PLEASE_CHOOSE)
     print(c.NAV_TITLE)
-    print("""1) Return to home menu
-2) Return to View/Edit menu""")
+    print("1) Return to home menu\n2) Return to View/Edit menu")
 
     section_heading("\nActive Data Filters ----- (filter task logs by one or more criteria)")
     print("{:30} {:30} {:30}".format(f"Task Name: {task_name_filter}", f"Start Date: {start_date_filter}",
@@ -180,9 +177,7 @@ def set_filters_screen(filter_states, prev_screen):
 
     print(c.MSG_PLEASE_CHOOSE)
     print(c.NAV_TITLE)
-    print(f"""1) Return to home menu
-2) Return to {prev_screen} Screen
-""")
+    print(f"1) Return to home menu\n2) Return to {prev_screen} Screen")
     section_heading("\nActive Data Filters ----- (filter task logs by one or more criteria)")
     print("{:30} {:30} {:30}".format(f"Task Name: {task_name_filter}", f"Start Date: {start_date_filter}",
                                      f"End Date: {end_date_filter}"))
@@ -309,8 +304,7 @@ def add_task_log(filter_states):
 def edit_task_log_screen(filter_states):
     print(MSG_PLEASE_CHOOSE)
     print(NAV_TITLE)
-    print("""1) Return to home menu
-2) Return to View/Edit Menu\n""")
+    print("1) Return to home menu\n2) Return to View/Edit Menu\n")
 
     section_heading("Edit a Task Log")
     print("3) Edit task log\n")
@@ -409,12 +403,63 @@ def get_task_id():
     return user_num
 
 
+def delete_task_log_screen(filter_states):
+    print(MSG_PLEASE_CHOOSE)
+    print(NAV_TITLE)
+    print("1) Return to home screen\n2) Return to View/Edit menu\n")
+
+    section_heading("Delete a Task Log")
+    print("3) Delete a task log\n")
+
+    user_delete_task_log_input(filter_states)
+
+
+def user_delete_task_log_input(filter_states):
+    user_num = get_user_selection((1,2,3))
+
+    match user_num:
+        case 1:
+            # Go to home screen
+            home_menu_screen(filter_states)
+        case 2:
+            # Go to view task logs screen
+            view_task_logs_screen(filter_states)
+        case 3:
+            # Add a task log
+            delete_task_log(filter_states)
+
+
+def delete_task_log(filter_states):
+    print("\nEnter the ID of the task log you would like to delete.")
+    print("(To find a task log ID, visit the View Task Logs screen and filter as needed.)")
+
+    task_id = get_task_id()
+
+    print(f"\nCurrent data for the task log with ID {task_id}:")
+
+    # Temp sample data
+    data = temp_data()
+    print(data.iloc[[0]].to_string(index=False), "\n")
+
+    # Delete confirmation
+    print("Are you sure you want to delete this task log? (enter 1 for yes or 2 for no)")
+
+    user_num = get_user_selection((1,2))
+
+    if user_num == 1:
+        # Delete task log
+        print("Task log deleted!")
+        delete_task_log_screen(filter_states)
+    else:
+        delete_task_log_screen(filter_states)
+
+
 
 def task_log_analytics_screen(filter_states):
     pass
 
 
-# edit_task_log({
+# delete_task_log_screen({
 #         "Task Name": "any",
 #         "Start Date": "any",
 #         "End Date": "any",
