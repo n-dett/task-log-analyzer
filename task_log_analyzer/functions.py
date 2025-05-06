@@ -1,5 +1,3 @@
-from operator import index
-
 import constants as c
 from constants import MSG_PLEASE_CHOOSE, NAV_TITLE
 from temp_data import temp_data
@@ -488,12 +486,3 @@ def display_active_filters(filter_states):
     print("{:30} {:30} {:30}".format(f"Task Name: {task_name_filter}", f"Start Date: {start_date_filter}",
                                      f"End Date: {end_date_filter}"))
     print("{:30} {:30}".format(f"Category: {category_filter}", f"Task Type: {task_type_filter}\n"))
-
-
-# task_log_analytics_screen({
-#         "Task Name": "any",
-#         "Start Date": "any",
-#         "End Date": "any",
-#         "Category": "any",
-#         "Task Type": "any"
-#     })
