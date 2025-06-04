@@ -373,7 +373,7 @@ def user_add_task_log_input(filter_states):
             home_menu_screen(filter_states)
         case 2:
             # Go to view task logs screen
-            view_task_logs_screen(filter_states)
+            view_edit_task_logs_screen(filter_states)
         case 3:
             # Add a task log
             add_task_log(filter_states)
@@ -399,7 +399,7 @@ def add_task_log(filter_states):
             home_menu_screen(filter_states)
         case 2:
             # Go to view task logs screen
-            view_task_logs_screen(filter_states)
+            view_edit_task_logs_screen(filter_states)
         case 3:
             # Add a task log
             add_task_log(filter_states)
@@ -605,8 +605,13 @@ def task_log_analytics_screen(filter_states):
     print(f"Total number of task logs: {summary_data_dict["total_task_logs"]}")
     print(f"Total time logged: {summary_data_dict["total_time"]}")
     print(f"Average duration per task log: {summary_data_dict["avg_duration"]}")
-    print(f"Time logged per task type: {summary_data_dict["time_by_type"]}")
-    print(f"Time logged per category type: {summary_data_dict["time_by_category"]}\n")
+    print(f"Time logged per task type:")
+    for key, value in summary_data_dict["time_by_type"].items():
+        print(f"\t{key}: {value}")
+    print(f"Time logged per category type:")
+    for key, value in summary_data_dict["time_by_category"].items():
+        print(f"\t{key}: {value}")
+    print("\n")
 
     user_num = get_user_selection((1,2))
 
