@@ -1,9 +1,10 @@
 import constants as c
 from constants import MSG_PLEASE_CHOOSE, NAV_TITLE
-from task_log_analyzer.sockets import data_clean_socket
+from task_log_analyzer.sockets import data_clean_socket, validator_socket
 from temp_data import temp_data
 import sockets
 import pandas as pd
+import io
 
 
 
@@ -86,6 +87,68 @@ Enter 1 to cancel.""")
     user_csv_input(filter_states)
 
 
+def send_to_cleaner(df):
+    # Convert to csv string
+    csv_string = df.to_csv(header=True, index=False)
+
+    # Send data to cleaning microservice
+    data_clean_socket.send_string(csv_string)
+    # Receive cleaned csv from microservice
+    data_clean_message = data_clean_socket.recv()
+    cleaned_df_string = data_clean_message.decode()
+
+    return cleaned_df_string
+
+
+
+def send_to_validator(df_string):
+    # Send data to validator microservice
+    df = pd.read_csv(io.StringIO(df_string))
+    df_csv = df.to_csv(index=False)
+    df_lines = df_csv.splitlines()
+    df_string = ','.join(df_lines)
+    validator_socket.send_string(df_string)
+    # Receive validated data from microservice
+    valid_data_message = data_clean_socket.recv()
+    valid_data_string = valid_data_message.decode()
+
+    # Convert back to csv
+    valid_data_list = valid_data_string.split('\n')
+    # Split into two string arrays
+    valid_data = valid_data_list[0].strip()
+    status_msg = valid_data_list[1].strip()
+
+    # Remove "Valid data:"
+    valid_data = valid_data.replace("Valid data: ", "")
+
+    # Remove braces
+    valid_data = valid_data.replace("]", "")
+    valid_data = valid_data.replace("[", "")
+
+    # Remove apostrophes
+    valid_data = valid_data.replace("'", "")
+
+    # Remove extra spaces
+    valid_data = valid_data.replace(", ", ",")
+
+    # Add \n to recreate rows; save in new string
+    comma_count = 0
+    new_string = ""
+    for char in valid_data:
+        if char == ',':
+            comma_count += 1
+            if comma_count % 6 == 0:
+                char = '\n'
+        new_string += char
+
+    # Convert back to data frame
+    valid_df = pd.read_csv(io.StringIO(new_string), sep=",")
+    valid_df_string = valid_df.to_string()
+
+    print(status_msg)
+    return valid_df
+
+
 def user_csv_input(filter_states):
     """User inputs one or more csv files to be stored/analyzed"""
     # Get user selection
@@ -102,20 +165,12 @@ def user_csv_input(filter_states):
             # Read into data frame
             df = pd.read_csv(file_path)
 
-            # Convert to csv string
-            csv_string = df.to_csv(header=True, index=False)
+            # Send to data cleaner and back
+            cleaned_df_string = send_to_cleaner(df)
 
-            # Send data to cleaning microservice
-            data_clean_socket.send_string(csv_string)
-            # Receive cleaned csv from microservice
-            data_clean_message = data_clean_socket.recv()
-            cleaned_csv_string = data_clean_message.decode()
+            # Send to validator and back
+            valid_df = send_to_validator(cleaned_df_string)
 
-            print(f"\n\nCLEANED CSV STRING:\n {cleaned_csv_string}\n\n")
-
-
-            # Send data to validator microservice
-            # Receive validated data from microservice
 
 
             # Send load data event num to database microservice

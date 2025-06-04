@@ -10,3 +10,13 @@ Connection for data cleaning microservice
 data_clean_socket = context.socket(zmq.REQ)
 # Connect to remote socket
 data_clean_socket.connect("tcp://localhost:4377")
+
+
+
+'''
+Connection for data validator microservice
+'''
+# Set up request socket
+validator_socket = context.socket(zmq.REQ)
+# Connect to remote socket
+validator_socket.connect("tcp://localhost:5559")
