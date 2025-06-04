@@ -93,30 +93,35 @@ def send_to_cleaner(df):
 
     # Send data to cleaning microservice
     data_clean_socket.send_string(csv_string)
+
     # Receive cleaned csv from microservice
     data_clean_message = data_clean_socket.recv()
-    cleaned_df_string = data_clean_message.decode()
+    cleaned_csv_string = data_clean_message.decode()
 
-    return cleaned_df_string
+    return cleaned_csv_string
 
 
 
-def send_to_validator(df_string):
+def send_to_validator(csv_string):
     # Send data to validator microservice
-    df = pd.read_csv(io.StringIO(df_string))
-    df_csv = df.to_csv(index=False)
-    df_lines = df_csv.splitlines()
-    df_string = ','.join(df_lines)
-    validator_socket.send_string(df_string)
+    df_lines = csv_string.splitlines()
+    csv_string = ','.join(df_lines)
+    validator_socket.send_string(csv_string)
+
     # Receive validated data from microservice
-    valid_data_message = data_clean_socket.recv()
+    valid_data_message = validator_socket.recv()
     valid_data_string = valid_data_message.decode()
 
     # Convert back to csv
     valid_data_list = valid_data_string.split('\n')
-    # Split into two string arrays
-    valid_data = valid_data_list[0].strip()
-    status_msg = valid_data_list[1].strip()
+    valid_data = ""
+    status_msg = ""
+    if len(valid_data_list) > 1:
+        # Split into two string arrays
+        valid_data = valid_data_list[0].strip()
+        status_msg = valid_data_list[1].strip()
+    else:
+        status_msg = valid_data_list[0].strip()
 
     # Remove "Valid data:"
     valid_data = valid_data.replace("Valid data: ", "")
@@ -166,10 +171,12 @@ def user_csv_input(filter_states):
             df = pd.read_csv(file_path)
 
             # Send to data cleaner and back
-            cleaned_df_string = send_to_cleaner(df)
+            cleaned_csv_string = send_to_cleaner(df)
+            print(f"CLEANED DATA:\n{cleaned_csv_string}")
 
             # Send to validator and back
-            valid_df = send_to_validator(cleaned_df_string)
+            valid_df = send_to_validator(cleaned_csv_string)
+            print(f"VALID DF:\n{valid_df}")
 
 
 
