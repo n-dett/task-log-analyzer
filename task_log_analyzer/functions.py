@@ -527,7 +527,7 @@ def user_delete_task_log_input(filter_states):
             home_menu_screen(filter_states)
         case 2:
             # Go to view task logs screen
-            view_task_logs_screen(filter_states)
+            view_edit_task_logs_screen(filter_states)
         case 3:
             # Add a task log
             delete_task_log(filter_states)
@@ -539,20 +539,32 @@ def delete_task_log(filter_states):
 
     task_id = get_task_id()
 
-    print(f"\nCurrent data for the task log with ID {task_id}:")
+    #print(f"\nCurrent data for the task log with ID {task_id}:")
 
     # Temp sample data
-    data = temp_data()
-    print(data.iloc[[0]].to_string(index=False), "\n")
+    # data = temp_data()
+    # print(data.iloc[[0]].to_string(index=False), "\n")
 
     # Delete confirmation
-    print("Are you sure you want to delete this task log? (enter 1 for yes or 2 for no)")
+    print(f"Are you sure you want to delete the task log with ID {task_id}? (enter 1 for yes or 2 for no)")
 
     user_num = get_user_selection((1,2))
 
     if user_num == 1:
         # Delete task log
-        print("Task log deleted!")
+
+        # Send select data event num to database microservice
+        sockets.database_socket.send_string("4")
+        # Receive response from microservice
+        event_message = sockets.database_socket.recv()
+        # Send task ID to database microservice
+        sockets.database_socket.send_string(str(task_id))
+        # Receive response from microservice
+        confirmation_message = sockets.database_socket.recv()
+        confirmation_string = confirmation_message.decode()
+
+        print(f"{confirmation_string}\n")
+        #print("Task log deleted!")
         delete_task_log_screen(filter_states)
     else:
         delete_task_log_screen(filter_states)
