@@ -1,6 +1,9 @@
 import constants as c
 from constants import MSG_PLEASE_CHOOSE, NAV_TITLE
+from task_log_analyzer.sockets import data_clean_socket
 from temp_data import temp_data
+import sockets
+import pandas as pd
 
 
 
@@ -24,6 +27,7 @@ def get_user_selection(nums_tuple:tuple):
 def section_heading(heading:str):
     print(f"""{heading}
 {c.LONG_LINE}""")
+
 
 def home_menu_screen(filter_states):
     # Home menu
@@ -94,8 +98,33 @@ def user_csv_input(filter_states):
         case 2:
             # Upload csv
             file_path = input("Enter .csv file path: ")
-            # Will add cleaning/validation later in microservices
+
+            # Read into data frame
+            df = pd.read_csv(file_path)
+
+            # Convert to csv string
+            csv_string = df.to_csv(header=True, index=False)
+
+            # Send data to cleaning microservice
+            data_clean_socket.send_string(csv_string)
+            # Receive cleaned csv from microservice
+            data_clean_message = data_clean_socket.recv()
+            cleaned_csv_string = data_clean_message.decode()
+
+            print(f"\n\nCLEANED CSV STRING:\n {cleaned_csv_string}\n\n")
+
+
+            # Send data to validator microservice
+            # Receive validated data from microservice
+
+
+            # Send load data event num to database microservice
+            # Receive response from microservice
+            # Send csv to database microservice
+            # Receive response from microservice
+
             print("\nFile load successful!")
+            # Print the rows that were dropped
             print("Enter 1 to return to home screen, or 2 to load another file.")
             user_csv_input(filter_states)
 
