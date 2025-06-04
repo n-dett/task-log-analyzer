@@ -1,10 +1,10 @@
 import constants as c
 from constants import MSG_PLEASE_CHOOSE, NAV_TITLE
-from task_log_analyzer.sockets import data_clean_socket, validator_socket, database_socket
+from task_log_analyzer.sockets import data_clean_socket, validator_socket, database_socket, summary_socket
 from temp_data import temp_data
-import sockets
 import pandas as pd
 import io
+import json
 
 
 
@@ -156,14 +156,14 @@ def send_to_validator(csv_string):
 
 def insert_csv_in_db(df):
     # Send load data event num to database microservice
-    sockets.database_socket.send_string("1")
+    database_socket.send_string("1")
     # Receive response from microservice
-    event_message = sockets.database_socket.recv()
+    event_message = database_socket.recv()
     # Send csv to database microservice
     csv_string = df.to_csv(header=True, index=False)
-    sockets.database_socket.send_string(csv_string)
+    database_socket.send_string(csv_string)
     # Receive response from microservice
-    confirmation_message = sockets.database_socket.recv()
+    confirmation_message = database_socket.recv()
 
 
 def user_csv_input(filter_states):
@@ -249,13 +249,13 @@ def view_task_logs_screen(filter_states):
 
     # Retrieve and display task logs
     # Send select data event num to database microservice
-    sockets.database_socket.send_string("2")
+    database_socket.send_string("2")
     # Receive response from microservice
-    event_message = sockets.database_socket.recv()
+    event_message = database_socket.recv()
     # Send csv to database microservice
-    sockets.database_socket.send_string("Main program: requesting db data")
+    database_socket.send_string("Main program: requesting db data")
     # Receive response from microservice
-    csv_message = sockets.database_socket.recv()
+    csv_message = database_socket.recv()
     csv_string = csv_message.decode()
     df = pd.read_csv(io.StringIO(csv_string))
 
@@ -554,13 +554,13 @@ def delete_task_log(filter_states):
         # Delete task log
 
         # Send select data event num to database microservice
-        sockets.database_socket.send_string("4")
+        database_socket.send_string("4")
         # Receive response from microservice
-        event_message = sockets.database_socket.recv()
+        event_message = database_socket.recv()
         # Send task ID to database microservice
-        sockets.database_socket.send_string(str(task_id))
+        database_socket.send_string(str(task_id))
         # Receive response from microservice
-        confirmation_message = sockets.database_socket.recv()
+        confirmation_message = database_socket.recv()
         confirmation_string = confirmation_message.decode()
 
         print(f"{confirmation_string}\n")
@@ -580,14 +580,33 @@ def task_log_analytics_screen(filter_states):
     print("2) Set or remove a data filter\n")
 
     section_heading("Task Log Analytics")
-    # Temp sample data
-    print("Total number of tasks: 10")
-    print("Total time logged: 14:47:00")
-    print("Average duration per task log: 1:28:42")
-    print("Task type with most time logged: Design 07:39:00")
-    print("Category with most time logged: Freelance 08:17:00")
-    print("Most productive time of day: Evening (between 6:01 PM and 12:00 AM)")
-    print("Most productive day of the week: Sunday 04:33:00\n")
+
+    # Retrieve task log data
+    # Send select data event num to database microservice
+    database_socket.send_string("2")
+    # Receive response from microservice
+    event_message = database_socket.recv()
+    # Send csv to database microservice
+    database_socket.send_string("Main program: requesting db data")
+    # Receive response from microservice
+    csv_message = database_socket.recv()
+    csv_string = csv_message.decode()
+    #df = pd.read_csv(io.StringIO(csv_string))
+
+
+    # Send data to summary microservice
+    summary_socket.send_string(csv_string)
+    # Receive data summary
+    summary_message = summary_socket.recv()
+    summary_data_json = summary_message.decode()
+    summary_data_dict = json.loads(summary_data_json)
+
+
+    print(f"Total number of task logs: {summary_data_dict["total_task_logs"]}")
+    print(f"Total time logged: {summary_data_dict["total_time"]}")
+    print(f"Average duration per task log: {summary_data_dict["avg_duration"]}")
+    print(f"Time logged per task type: {summary_data_dict["time_by_type"]}")
+    print(f"Time logged per category type: {summary_data_dict["time_by_category"]}\n")
 
     user_num = get_user_selection((1,2))
 
