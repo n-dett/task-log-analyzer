@@ -193,9 +193,6 @@ def user_csv_input(filter_states):
             # Send to database microservice
             insert_csv_in_db(valid_df)
 
-
-
-
             print("\nFile load successful!")
 
             print("Enter 1 to return to home screen, or 2 to load another file.")
@@ -249,8 +246,20 @@ def view_task_logs_screen(filter_states):
     print("3) Set or remove a data filter\n")
 
     section_heading("\nView Task Logs")
-    # Output data
-    print(temp_data().to_string(index=False), "\n")
+
+    # Retrieve and display task logs
+    # Send select data event num to database microservice
+    sockets.database_socket.send_string("2")
+    # Receive response from microservice
+    event_message = sockets.database_socket.recv()
+    # Send csv to database microservice
+    sockets.database_socket.send_string("Main program: requesting db data")
+    # Receive response from microservice
+    csv_message = sockets.database_socket.recv()
+    csv_string = csv_message.decode()
+    df = pd.read_csv(io.StringIO(csv_string))
+
+    print(df.to_string(index=False), "\n")
 
     user_num = get_user_selection((1,2,3))
     match user_num:
