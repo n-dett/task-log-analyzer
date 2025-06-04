@@ -1,6 +1,6 @@
 import constants as c
 from constants import MSG_PLEASE_CHOOSE, NAV_TITLE
-from task_log_analyzer.sockets import data_clean_socket, validator_socket
+from task_log_analyzer.sockets import data_clean_socket, validator_socket, database_socket
 from temp_data import temp_data
 import sockets
 import pandas as pd
@@ -154,6 +154,18 @@ def send_to_validator(csv_string):
     return valid_df
 
 
+def insert_csv_in_db(df):
+    # Send load data event num to database microservice
+    sockets.database_socket.send_string("1")
+    # Receive response from microservice
+    event_message = sockets.database_socket.recv()
+    # Send csv to database microservice
+    csv_string = df.to_csv(header=True, index=False)
+    sockets.database_socket.send_string(csv_string)
+    # Receive response from microservice
+    confirmation_message = sockets.database_socket.recv()
+
+
 def user_csv_input(filter_states):
     """User inputs one or more csv files to be stored/analyzed"""
     # Get user selection
@@ -172,21 +184,20 @@ def user_csv_input(filter_states):
 
             # Send to data cleaner and back
             cleaned_csv_string = send_to_cleaner(df)
-            print(f"CLEANED DATA:\n{cleaned_csv_string}")
+            #print(f"CLEANED DATA:\n{cleaned_csv_string}")
 
             # Send to validator and back
             valid_df = send_to_validator(cleaned_csv_string)
-            print(f"VALID DF:\n{valid_df}")
+            #print(f"VALID DF:\n{valid_df}")
+
+            # Send to database microservice
+            insert_csv_in_db(valid_df)
 
 
 
-            # Send load data event num to database microservice
-            # Receive response from microservice
-            # Send csv to database microservice
-            # Receive response from microservice
 
             print("\nFile load successful!")
-            # Print the rows that were dropped
+
             print("Enter 1 to return to home screen, or 2 to load another file.")
             user_csv_input(filter_states)
 

@@ -20,3 +20,13 @@ Connection for data validator microservice
 validator_socket = context.socket(zmq.REQ)
 # Connect to remote socket
 validator_socket.connect("tcp://localhost:5559")
+
+
+
+'''
+Connection for data validator microservice
+'''
+# Set up request socket
+database_socket = context.socket(zmq.REQ)
+# Connect to remote socket
+database_socket.connect("tcp://localhost:4325")
